@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}咨询记录 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>我的咨询记录</h2>
+    <p>查看进度，心里更踏实。</p>
+  </div>
+  <div class="card-grid">
+    {% for ticket in page_obj %}
+    <div class="card">
+      <h3>{{ ticket.title }}</h3>
+      <p>{{ ticket.message|truncatechars:120 }}</p>
+      <div class="card-meta">
+        <span class="tag">{{ ticket.get_status_display }}</span>
+        <span>{{ ticket.created_at|date:"Y-m-d" }}</span>
+      </div>
+    </div>
+    {% empty %}
+    <div class="empty">还没有记录，随时可以发起咨询。</div>
+  {% endfor %}
+  </div>
+</section>
+{% include "partials/pagination.html" %}
+{% endblock %}

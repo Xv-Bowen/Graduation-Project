@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}已收到 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>我们已收到</h2>
+    <p>已记录你的需求，我们会尽快联系你。</p>
+  </div>
+  <a class="button" href="{% url 'home' %}">返回首页</a>
+</section>
+{% endblock %}

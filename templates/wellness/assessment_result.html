@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}评估结果 - 心理自测{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>{{ submission.assessment.name }} 评估结果</h2>
+    <p>评估时间：{{ submission.created_at|date:"Y-m-d H:i" }}</p>
+  </div>
+  <div class="result-card">
+    <div class="result-score">总分：{{ submission.total_score }}</div>
+    <h3>{{ submission.result_title }}</h3>
+    <p>{{ submission.result_summary }}</p>
+    {% if submission.result_advice %}
+    <div class="panel-note">{{ submission.result_advice }}</div>
+    {% endif %}
+  </div>
+  <div class="article-actions">
+    <a class="button" href="{% url 'assessment_list' %}">继续自测</a>
+    <a class="button ghost" href="{% url 'assessment_history' %}">查看历史</a>
+  </div>
+</section>
+
+<section class="panel soft">
+  <div class="panel-head">
+    <h2>提醒</h2>
+    <p>自测不能替代诊断，如感到痛苦或影响生活，请及时寻求专业支持。</p>
+  </div>
+</section>
+{% endblock %}

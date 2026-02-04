@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}咨询管理 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>咨询管理</h2>
+    <p>集中查看并跟进咨询请求。</p>
+  </div>
+  <div class="table">
+    <div class="table-row table-head">
+      <span>标题</span>
+      <span>状态</span>
+      <span>创建时间</span>
+      <span>操作</span>
+    </div>
+    {% for ticket in page_obj %}
+    <div class="table-row">
+      <span>{{ ticket.title }}</span>
+      <span class="tag">{{ ticket.get_status_display }}</span>
+      <span>{{ ticket.created_at|date:"Y-m-d H:i" }}</span>
+      <a class="button ghost" href="{% url 'manage_ticket_detail' ticket.id %}">查看</a>
+    </div>
+    {% empty %}
+    <div class="empty">暂时没有咨询请求。</div>
+    {% endfor %}
+  </div>
+</section>
+{% include "partials/pagination.html" %}
+{% endblock %}

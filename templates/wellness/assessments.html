@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}心理自测 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>心理自测</h2>
+    <p>常见量表帮助自我了解，仅供参考，不替代诊断。</p>
+  </div>
+  <form class="search-bar" method="get">
+    <input type="text" name="query" value="{{ query }}" placeholder="输入关键词，例如：抑郁、焦虑" />
+    <button class="button search-button" type="submit">搜索</button>
+  </form>
+  <div class="pill-grid">
+    <a class="pill {% if not category %}active{% endif %}" href="{% url 'assessment_list' %}">全部</a>
+    {% for item in categories %}
+    <a class="pill {% if category == item %}active{% endif %}" href="{% url 'assessment_list' %}?category={{ item }}">{{ item }}</a>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="assessment-layout">
+  <section class="panel assessment-list">
+    <div class="card-grid">
+      {% for assessment in page_obj %}
+      <article class="card">
+        <h3><a href="{% url 'assessment_detail' assessment.slug %}">{{ assessment.name }}</a></h3>
+        <p>{{ assessment.description|default:"适用于日常自我了解。" }}</p>
+        <div class="card-meta">
+          <span class="tag">{{ assessment.category|default:"自测" }}</span>
+          <span>{{ assessment.question_count }} 题</span>
+        </div>
+      </article>
+      {% empty %}
+      <div class="empty">暂无匹配的量表。</div>
+      {% endfor %}
+    </div>
+    {% include "partials/pagination.html" %}
+  </section>
+
+  <section class="panel soft assessment-tip">
+    <div class="panel-head">
+      <h2>温馨提示</h2>
+      <p>自测结果仅供参考，如感到困扰持续或加重，建议寻求专业帮助。</p>
+    </div>
+  </section>
+</div>
+{% endblock %}

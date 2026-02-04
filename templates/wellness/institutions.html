@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}机构与热线 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>机构与热线</h2>
+    <p>根据地区快速查找心理健康关怀资源。</p>
+  </div>
+  <form class="search-bar" method="get">
+    <input type="text" name="query" value="{{ query }}" placeholder="输入关键词，例如：医院、援助、热线" />
+    <input type="hidden" name="region" value="{{ region }}" />
+    <button class="button search-button" type="submit">搜索</button>
+  </form>
+  <div class="pill-grid">
+    <a class="pill {% if region == 'local' %}active{% endif %}" href="{% url 'service_directory' %}?region=local">
+      本地 · {{ local_city }}
+    </a>
+    <a class="pill {% if region == 'province' %}active{% endif %}" href="{% url 'service_directory' %}?region=province">
+      本省 · {{ local_province }}
+    </a>
+    <a class="pill {% if region == 'national' %}active{% endif %}" href="{% url 'service_directory' %}?region=national">
+      全国
+    </a>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>心理健康机构</h2>
+    <p>提供机构名称、地点与联系电话。</p>
+  </div>
+  <div class="card-grid">
+    {% for item in institutions %}
+    <article class="card">
+      <h3>{{ item.name }}</h3>
+      <p>{{ item.description|default:"提供心理咨询与精神卫生服务。" }}</p>
+      <div class="card-meta">
+        <span class="tag">{{ item.city|default:item.province }}</span>
+        {% if item.phone %}<span>电话：{{ item.phone }}</span>{% endif %}
+      </div>
+      {% if item.address %}
+      <div class="panel-note">地址：{{ item.address }}</div>
+      {% endif %}
+      {% if item.service_hours %}
+      <div class="panel-note">服务时间：{{ item.service_hours }}</div>
+      {% endif %}
+    </article>
+    {% empty %}
+    <div class="empty">暂无匹配的机构信息。</div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel soft">
+  <div class="panel-head">
+    <h2>心理援助热线</h2>
+    <p>心理援助热线与紧急援助信息。</p>
+  </div>
+  <div class="card-grid">
+    {% for hotline in emergency_hotlines %}
+    <article class="card">
+      <h3>{{ hotline.name }}</h3>
+      <p>{{ hotline.description|default:"紧急心理援助热线" }}</p>
+      <div class="card-meta">
+        <span class="tag">紧急援助</span>
+        {% if hotline.is_24h %}<span class="tag">24小时</span>{% endif %}
+      </div>
+      <div class="panel-note">电话：{{ hotline.phone }}</div>
+    </article>
+    {% endfor %}
+    {% for hotline in service_hotlines %}
+    <article class="card">
+      <h3>{{ hotline.name }}</h3>
+      <p>{{ hotline.description|default:"心理健康服务热线" }}</p>
+      <div class="card-meta">
+        {% if hotline.is_24h %}<span class="tag">24小时</span>{% endif %}
+        <span class="tag">心理关怀</span>
+      </div>
+      <div class="panel-note">电话：{{ hotline.phone }}</div>
+    </article>
+    {% empty %}
+    <div class="empty">暂无匹配的热线信息。</div>
+    {% endfor %}
+  </div>
+  <div class="panel-note">信息来源于公开资料，仅供参考，请以官方发布为准。</div>
+</section>
+{% endblock %}

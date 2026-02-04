@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ article.title }} - 银龄心语{% endblock %}
+
+{% block content %}
+<div class="reading-progress">
+  <div class="reading-progress-bar" id="readingProgress"></div>
+</div>
+<article class="article">
+  <header>
+    <h1>{{ article.title }}</h1>
+    <div class="article-meta">
+      <span class="tag">{{ article.category.name }}</span>
+      <span>{{ article.created_at|date:"Y-m-d" }}</span>
+      <span class="reading-time" id="readingTime">预计阅读 - 分钟</span>
+    </div>
+  </header>
+  <div class="tts-panel">
+    <span class="tts-title">轻声朗读</span>
+    <div class="tts-controls">
+      <button id="ttsPlay" class="button">播放</button>
+      <button id="ttsPause" class="button ghost">暂停 / 继续</button>
+      <button id="ttsStop" class="button ghost">停止</button>
+    </div>
+    <div id="ttsStatus" class="tts-status">轻触“播放”即可开始。</div>
+  </div>
+  <div class="article-body" id="articleContent">
+    <p class="summary">{{ article.summary }}</p>
+    {{ article.content|linebreaks }}
+  </div>
+  <div class="article-actions">
+    <a class="button ghost" href="{% url 'knowledge_list' %}">返回知识库</a>
+    <a class="button" href="{% url 'consult' %}">人工咨询</a>
+  </div>
+</article>
+{% endblock %}
+
+{% block scripts %}{% endblock %}

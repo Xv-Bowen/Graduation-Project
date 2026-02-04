@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}咨询详情 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>咨询详情</h2>
+    <p>处理记录会保留，便于追踪。</p>
+  </div>
+  <div class="detail-card">
+    <h3>{{ ticket.title }}</h3>
+    <p>{{ ticket.message }}</p>
+    <div class="detail-meta">
+      <span>状态：{{ ticket.get_status_display }}</span>
+      <span>联系人：{{ ticket.contact_name|default:"-" }}</span>
+      <span>电话：{{ ticket.contact_phone|default:"-" }}</span>
+      <span>邮箱：{{ ticket.contact_email|default:"-" }}</span>
+      <span>创建时间：{{ ticket.created_at|date:"Y-m-d H:i" }}</span>
+    </div>
+  </div>
+
+  <div class="split-grid">
+    <form class="form-card" method="post" hx-boost="false">
+      {% csrf_token %}
+      <h3>更新状态</h3>
+      {{ status_form.non_field_errors }}
+      <label>状态</label>
+      {{ status_form.status }}
+      <label>指派给</label>
+      {{ status_form.assigned_to }}
+      <button class="button" type="submit" name="update_status">保存</button>
+    </form>
+
+    <form class="form-card" method="post" hx-boost="false">
+      {% csrf_token %}
+      <h3>新增记录</h3>
+      {{ note_form.non_field_errors }}
+      {{ note_form.note }}
+      <label class="checkbox">
+        {{ note_form.is_internal }} 仅内部可见
+      </label>
+      <button class="button ghost" type="submit" name="add_note">保存记录</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h3>跟进记录</h3>
+    {% for note in ticket.notes.all %}
+    <div class="note-card {% if note.is_internal %}internal{% endif %}">
+      <div>{{ note.note }}</div>
+      <div class="note-meta">
+        {{ note.author|default:"系统" }} · {{ note.created_at|date:"Y-m-d H:i" }}
+      </div>
+    </div>
+    {% empty %}
+    <div class="empty">暂时没有记录。</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

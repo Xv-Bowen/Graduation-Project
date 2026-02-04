@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}知识库 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>知识库</h2>
+    <p>按主题整理，支持搜索。找内容更轻松。</p>
+  </div>
+  <form class="search-bar" method="get">
+    <input
+      type="text"
+      name="query"
+      value="{{ form.query.value|default_if_none:'' }}"
+      placeholder="输入关键词，例如：睡眠、焦虑、孤独"
+    />
+    <button class="button search-button" type="submit">搜索</button>
+  </form>
+  <div class="pill-grid">
+    <a class="pill {% if not selected_category %}active{% endif %}" href="{% url 'knowledge_list' %}">
+      全部主题
+    </a>
+    {% for category in categories %}
+    <a
+      class="pill {% if selected_category and selected_category.slug == category.slug %}active{% endif %}"
+      href="{% url 'knowledge_list' %}?category={{ category.slug }}"
+    >
+      {{ category.name }}
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="card-grid">
+  {% for article in page_obj %}
+  <article class="card">
+    <h3><a href="{% url 'knowledge_detail' article.slug %}">{{ article.title }}</a></h3>
+    <p>{{ article.summary|default:article.content|truncatechars:120 }}</p>
+    <div class="card-meta">
+      <span class="tag">{{ article.category.name }}</span>
+      <span>{{ article.created_at|date:"Y-m-d" }}</span>
+    </div>
+  </article>
+  {% empty %}
+  <div class="empty">暂时没有匹配内容，换个关键词试试。</div>
+  {% endfor %}
+</section>
+{% include "partials/pagination.html" %}
+{% endblock %}

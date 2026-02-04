@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}人工咨询 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel panel-dark">
+  <div class="panel-head">
+    <h2>预约人工咨询</h2>
+    <p>简单填写，我们会尽快联系你。</p>
+  </div>
+  <form class="form-card" method="post" hx-boost="false">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <label>问题标题</label>
+    {{ form.title }}
+    <label>简要描述情况</label>
+    {{ form.message }}
+    <div class="grid-2">
+      <div>
+        <label>联系人姓名</label>
+        {{ form.contact_name }}
+      </div>
+      <div>
+        <label>联系电话</label>
+        {{ form.contact_phone }}
+      </div>
+    </div>
+    <label>电子邮箱（可选）</label>
+    {{ form.contact_email }}
+    <button class="button button-lg" type="submit">提交咨询</button>
+  </form>
+  <div class="panel-note">
+    提示：本服务用于初步咨询，不替代医学诊断。
+  </div>
+</section>
+{% endblock %}

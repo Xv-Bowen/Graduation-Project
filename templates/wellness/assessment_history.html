@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}自测历史 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>自测历史</h2>
+    <p>查看自己的自测记录与结果。</p>
+  </div>
+  <div class="card-grid">
+    {% for item in page_obj %}
+    <article class="card">
+      <h3>{{ item.assessment.name }}</h3>
+      <p>{{ item.result_title }} · 总分 {{ item.total_score }}</p>
+      <div class="card-meta">
+        <span>{{ item.created_at|date:"Y-m-d H:i" }}</span>
+        <a class="button ghost" href="{% url 'assessment_result' item.assessment.slug item.id %}">查看</a>
+      </div>
+    </article>
+    {% empty %}
+    <div class="empty">暂时还没有自测记录。</div>
+    {% endfor %}
+  </div>
+</section>
+{% include "partials/pagination.html" %}
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}{{ assessment.name }} - 心理自测{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>{{ assessment.name }}</h2>
+    <p>{{ assessment.description|default:"请根据最近两周的感受作答。" }}</p>
+  </div>
+  {% if assessment.instructions %}
+  <div class="panel-note">{{ assessment.instructions }}</div>
+  {% else %}
+  <div class="panel-note">自测结果仅供参考，不替代医学诊断。</div>
+  {% endif %}
+</section>
+
+<form class="form-card" method="post" hx-boost="false">
+  {% csrf_token %}
+  {% for question in questions %}
+  <div class="question-card">
+    <h3>Q{{ forloop.counter }}. {{ question.text }}</h3>
+    <div class="option-list">
+      {% for option in question.options.all %}
+      <label class="option">
+        <input type="radio" name="question_{{ question.id }}" value="{{ option.id }}" required />
+        <span>{{ option.text }}</span>
+      </label>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+  <button class="button button-lg" type="submit">提交评估</button>
+</form>
+{% endblock %}

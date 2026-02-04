@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}银龄心语{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-text">
+    <h1>关怀，在日常里</h1>
+    <p>
+      为长者准备的心理健康知识与咨询平台。
+      {% if request.user.is_authenticated %}
+      读一段知识，聊一聊心事。需要时，再由工作人员接力。
+      {% else %}
+      登录后可阅读知识库与 AI 陪伴。需要时，再由工作人员接力。
+      {% endif %}
+    </p>
+    <div class="hero-actions">
+      {% if request.user.is_authenticated %}
+      <a class="button" href="{% url 'knowledge_list' %}">开始阅读</a>
+      <a class="button ghost" href="{% url 'consult' %}">人工咨询</a>
+      {% else %}
+      <a class="button" href="{% url 'login' %}">立即登录</a>
+      <a class="button ghost" href="{% url 'register' %}">创建账号</a>
+      <a class="button ghost" href="{% url 'consult' %}">人工咨询</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="hero-card">
+    <h3>今日轻提示</h3>
+    <ul>
+      <li>规律作息，让心慢慢安定</li>
+      <li>焦虑时，缓慢深呼吸三次</li>
+      <li>保持联系，让心更踏实</li>
+    </ul>
+  </div>
+</section>
+
+<section class="feature-grid">
+  <div class="feature">
+    <h3>清晰易读</h3>
+    <p>按主题整理，一眼就懂。</p>
+  </div>
+  <div class="feature">
+    <h3>AI 温柔陪伴</h3>
+    <p>轻声交流，给出可执行的小建议。</p>
+  </div>
+  <div class="feature">
+    <h3>有人回应</h3>
+    <p>需要时由工作人员跟进。</p>
+  </div>
+</section>
+
+{% if request.user.is_authenticated %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>精选内容</h2>
+    <p>为常见困扰准备的内容，读完更安心。</p>
+  </div>
+  <div class="card-grid">
+    {% for article in articles %}
+    <article class="card">
+      <h3><a href="{% url 'knowledge_detail' article.slug %}">{{ article.title }}</a></h3>
+      <p>{{ article.summary|default:article.content|truncatechars:80 }}</p>
+      <span class="tag">{{ article.category.name }}</span>
+    </article>
+    {% empty %}
+    <div class="empty">暂时还没有内容。</div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel soft">
+  <div class="panel-head">
+    <h2>按主题浏览</h2>
+    <p>快速找到你需要的内容。</p>
+  </div>
+  <div class="pill-grid">
+    {% for category in categories %}
+    <a class="pill" href="{% url 'knowledge_list' %}?category={{ category.slug }}">{{ category.name }}</a>
+    {% empty %}
+    <div class="empty">暂时还没有分类。</div>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="floating-chat" data-api-url="{% url 'api_chat' %}" data-provider="deepseek">
+  <button class="floating-toggle" id="chatToggle" type="button">
+    <span class="dot"></span>
+    轻触对话
+  </button>
+  <div class="floating-panel glass-dark" id="chatPanel" aria-hidden="true">
+    <div class="chat-header">
+      <div class="chat-title">
+        <span class="chat-badge">AI</span>
+        <div>
+        <h3>AI 轻声陪伴</h3>
+        <p>轻声对话，提供建议，不替代医学诊断。</p>
+        </div>
+      </div>
+      <button class="chat-close" id="chatClose" type="button" aria-label="关闭">×</button>
+    </div>
+    <div class="chat-provider">
+      <span>对话模式</span>
+      <div class="mode-toggle-wrap">
+        <button class="mode-toggle-switch" id="deepThinkToggle" role="switch" aria-checked="false">
+          <span class="switch-label">深度思考</span>
+          <span class="switch-track"><span class="switch-knob"></span></span>
+        </button>
+        <span class="mode-state" id="deepThinkState">标准对话</span>
+      </div>
+    </div>
+    <div class="chat-shell">
+      <div id="chatHistory" class="chat-history">
+        <div class="chat-bubble assistant">
+          你好，我在这里。慢慢说，我们一起想办法。
+        </div>
+      </div>
+      <div class="chat-input">
+        <div class="chat-input-wrap">
+          <textarea id="chatInput" rows="3" placeholder="把想说的写在这里，例如：最近睡眠不好，怎么办？"></textarea>
+        </div>
+        <button id="chatSend" class="button chat-send">发送</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>登录后解锁知识库与 AI 陪伴</h2>
+    <p>为了保护隐私，请先登录。</p>
+  </div>
+  <div class="hero-actions">
+    <a class="button" href="{% url 'login' %}">立即登录</a>
+    <a class="button ghost" href="{% url 'register' %}">创建账号</a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}{% endblock %}

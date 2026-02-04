@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}心理放松 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>心理放松疗法</h2>
+    <p>用温和的日常练习帮助身心稳定。</p>
+  </div>
+  <div class="card-grid">
+    {% for method in methods %}
+    <article class="card">
+      <h3>{{ method.name }}</h3>
+      <p>{{ method.description|default:"适合日常练习的放松方法。" }}</p>
+      {% if method.steps %}
+      <div class="panel-note">步骤：{{ method.steps }}</div>
+      {% endif %}
+      <div class="card-meta">
+        <span class="tag">建议 {{ method.suggested_minutes }} 分钟</span>
+      </div>
+    </article>
+    {% empty %}
+    <div class="empty">暂无放松方法。</div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>放松提醒</h2>
+    <p>设置提醒时间，养成稳定练习的习惯。</p>
+  </div>
+  <form class="form-card" method="post" hx-boost="false">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="reminder" />
+    {{ reminder_form.non_field_errors }}
+    <label>放松方法</label>
+    {{ reminder_form.method }}
+    <label>提醒时间</label>
+    {{ reminder_form.reminder_time }}
+    <label>提醒日期</label>
+    {{ reminder_form.reminder_days }}
+    <label>目标时长（分钟）</label>
+    {{ reminder_form.target_minutes }}
+    <label class="checkbox">{{ reminder_form.is_active }} 启用提醒</label>
+    <button class="button button-lg" type="submit">保存提醒</button>
+  </form>
+  <div class="card-grid">
+    {% for reminder in reminders %}
+    <article class="card">
+      <h3>{{ reminder.method.name }}</h3>
+      <p>提醒时间：{{ reminder.reminder_time|time:"H:i" }}</p>
+      <div class="card-meta">
+        <span class="tag">目标 {{ reminder.target_minutes }} 分钟</span>
+        <span>{{ reminder.reminder_days_display }}</span>
+      </div>
+      <div class="panel-note">状态：{{ reminder.is_active|yesno:"启用,暂停" }}</div>
+    </article>
+    {% empty %}
+    <div class="empty">暂时还没有提醒。</div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="panel soft">
+  <div class="panel-head">
+    <h2>练习记录</h2>
+    <p>记录练习时长与效果，持续看到改变。</p>
+  </div>
+  <form class="form-card" method="post" hx-boost="false">
+    {% csrf_token %}
+    <input type="hidden" name="form_type" value="log" />
+    {{ log_form.non_field_errors }}
+    <label>放松方法</label>
+    {{ log_form.method }}
+    <label>关联提醒（可选）</label>
+    {{ log_form.reminder }}
+    <label>练习时间</label>
+    {{ log_form.practiced_at }}
+    <label>练习时长（分钟）</label>
+    {{ log_form.duration_minutes }}
+    <label>效果感受</label>
+    {{ log_form.effect_rating }}
+    <label>记录备注</label>
+    {{ log_form.notes }}
+    <button class="button button-lg" type="submit">保存记录</button>
+  </form>
+  <div class="card-grid">
+    {% for log in logs %}
+    <article class="card">
+      <h3>{{ log.method.name }}</h3>
+      <p>练习时间：{{ log.practiced_at|date:"Y-m-d H:i" }}</p>
+      <div class="card-meta">
+        <span class="tag">时长 {{ log.duration_minutes }} 分钟</span>
+        <span>效果评分 {{ log.effect_rating }}/5</span>
+      </div>
+      {% if log.notes %}
+      <div class="panel-note">备注：{{ log.notes }}</div>
+      {% endif %}
+    </article>
+    {% empty %}
+    <div class="empty">暂时还没有练习记录。</div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

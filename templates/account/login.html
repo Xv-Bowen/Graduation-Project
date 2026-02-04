@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}登录 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel panel-dark">
+  <div class="panel-head">
+    <h2>欢迎回来</h2>
+    <p>登录后可查看咨询记录，并进入知识库与 AI 陪伴。</p>
+  </div>
+  <form class="form-card" method="post" hx-boost="false">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <label>用户名</label>
+    {{ form.username }}
+    <label>密码</label>
+    {{ form.password }}
+    <button class="button" type="submit">登录</button>
+  </form>
+  <div class="panel-note">
+    还没有账号？<a href="{% url 'register' %}">创建一个</a>
+  </div>
+</section>
+{% endblock %}

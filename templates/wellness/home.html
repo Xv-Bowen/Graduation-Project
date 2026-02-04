@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}心理工具 - 银龄心语{% endblock %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>心理工具</h2>
+    <p>提供自测、机构热线与放松记录，让支持更及时。</p>
+  </div>
+  <div class="card-grid">
+    <article class="card">
+      <h3><a href="{% url 'assessment_list' %}">心理自测</a></h3>
+      <p>常见量表帮助自我了解，结果仅供参考。</p>
+      <div class="card-meta">
+        <span class="tag">{{ assessment_count }} 项量表</span>
+      </div>
+    </article>
+    <article class="card">
+      <h3><a href="{% url 'service_directory' %}">机构与热线</a></h3>
+      <p>本地/本省/全国心理关怀机构与热线。</p>
+      <div class="card-meta">
+        <span class="tag">{{ institution_count }} 家机构</span>
+        <span class="tag">{{ hotline_count }} 条热线</span>
+      </div>
+    </article>
+    <article class="card">
+      <h3><a href="{% url 'relaxation_center' %}">心理放松</a></h3>
+      <p>放松疗法提醒、时间记录与效果回顾。</p>
+      <div class="card-meta">
+        <span class="tag">{{ method_count }} 种方法</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="panel soft">
+  <div class="panel-head">
+    <h2>使用提示</h2>
+    <p>自测不能替代专业诊断，如有紧急风险请优先联系紧急援助。</p>
+  </div>
+  <div class="panel-note">
+    如感觉痛苦持续或影响生活，可选择人工咨询或就近就医。
+  </div>
+</section>
+{% endblock %}

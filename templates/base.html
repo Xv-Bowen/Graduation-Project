@@ -1,0 +1,90 @@
+{% load static %}
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}银龄心语{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/site.css' %}?v=20260204-7" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-header">
+        <div class="brand">
+          <span class="brand-mark">银龄心语</span>
+          <span class="brand-sub">轻轻陪伴，安心在身边</span>
+        </div>
+        <nav
+          class="site-nav"
+          hx-boost="true"
+          hx-target=".site-main"
+          hx-select=".site-main"
+          hx-swap="innerHTML"
+          hx-push-url="true"
+        >
+          <a href="{% url 'home' %}">首页</a>
+          {% if request.user.is_authenticated %}
+          <a href="{% url 'knowledge_list' %}">知识库</a>
+          <a href="{% url 'wellness_home' %}">心理工具</a>
+          {% endif %}
+          <a href="{% url 'consult' %}">人工咨询</a>
+          {% if request.user.is_staff %}
+          <a href="{% url 'manage_ticket_list' %}">咨询管理</a>
+          {% endif %}
+        </nav>
+        <div class="account-actions">
+          {% if request.user.is_authenticated %}
+          <span class="welcome">欢迎，{{ request.user.username }}</span>
+          <a class="button ghost" href="{% url 'my_tickets' %}">咨询记录</a>
+          <a class="button" href="{% url 'logout' %}">退出</a>
+          {% else %}
+          <a class="button ghost" href="{% url 'login' %}">登录</a>
+          <a class="button" href="{% url 'register' %}">创建账号</a>
+          {% endif %}
+        </div>
+      </header>
+
+      <div class="access-tools">
+        <div class="access-label">
+          <span class="label-title">阅读模式</span>
+          <span class="label-sub">一键放大，读得更轻松</span>
+        </div>
+        <div class="access-buttons" role="group" aria-label="字体大小">
+          <button class="size-btn" data-size="0.95">小号</button>
+          <button class="size-btn active" data-size="1">标准</button>
+          <button class="size-btn" data-size="1.15">放大</button>
+        </div>
+      </div>
+
+      {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <main
+        class="site-main"
+        hx-boost="true"
+        hx-target=".site-main"
+        hx-select=".site-main"
+        hx-swap="innerHTML"
+        hx-push-url="true"
+      >
+        {% block content %}{% endblock %}
+      </main>
+
+      <footer class="site-footer">
+        <div>本服务提供心理健康科普与咨询参考，不替代医学诊断。</div>
+        <div>如遇紧急情况，请联系家人或拨打当地紧急电话。</div>
+      </footer>
+    </div>
+    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+    <script src="{% static 'js/site.js' %}" defer></script>
+    <script src="{% static 'js/chat.js' %}?v=20260204-9" defer></script>
+    <script src="{% static 'js/tts.js' %}?v=20260204-2" defer></script>
+    <script src="{% static 'js/reading.js' %}?v=20260204-2" defer></script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
